@@ -983,6 +983,14 @@
       height: 16px;
       flex-shrink: 0;
     }
+    /* ── CURSOR SPARKLES ── */
+    #sparkle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+      pointer-events: none;
+    }
 
     /* ── MOBILE ── */
     @media (max-width: 768px) {
@@ -1023,6 +1031,7 @@
 </head>
 
 <body>
+  <canvas id="sparkle-canvas"></canvas>
 
   <!-- NAV -->
   <nav>
@@ -1680,6 +1689,91 @@
       msg.className = 'form-msg success';
       this.reset();
     });
+    // Cursor sparkle trail
+    (function () {
+      var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+      if (prefersReducedMotion || isTouchDevice) return;
+
+      var canvas = document.getElementById('sparkle-canvas');
+      var ctx = canvas.getContext('2d');
+      var colors = ['29,78,216', '17,17,17', '220,38,38'];
+      var particles = [];
+      var lastPoint = null;
+
+      function resize() {
+        canvas.width = window.innerWidth * devicePixelRatio;
+        canvas.height = window.innerHeight * devicePixelRatio;
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+        ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      window.addEventListener('pointermove', function (e) {
+        var point = { x: e.clientX, y: e.clientY };
+        var prev = lastPoint || point;
+        lastPoint = point;
+
+        var dx = point.x - prev.x;
+        var dy = point.y - prev.y;
+        var distance = Math.hypot(dx, dy);
+        var steps = Math.max(1, Math.min(12, Math.floor(distance / 4)));
+
+        for (var i = 0; i < steps; i++) {
+          var t = i / steps;
+          particles.push({
+            x: prev.x + dx * t + (Math.random() - 0.5) * 75,
+            y: prev.y + dy * t + (Math.random() - 0.5) * 75,
+            vx: dx * 0.18 + (Math.random() - 0.5) * 0.4,
+            vy: dy * 0.18 + (Math.random() - 0.5) * 0.4,
+            size: 0.8 + Math.random() * 1.1,
+            life: 1,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          });
+        }
+        if (particles.length > 220) particles.splice(0, particles.length - 220);
+      });
+
+      function drawParticle(p) {
+        var life = Math.max(p.life, 0);
+        if (life <= 0) return;
+        var speed = Math.hypot(p.vx, p.vy);
+        var angle = speed > 0.01 ? Math.atan2(p.vy, p.vx) : 0;
+        var r = p.size * 0.35 * life;
+        var tailLen = p.size * 4 * life;
+        var headOffset = r * 0.4;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(angle);
+        ctx.beginPath();
+        ctx.moveTo(-tailLen, 0);
+        ctx.lineTo(headOffset, -r);
+        ctx.arc(headOffset, 0, r, -Math.PI / 2, Math.PI / 2, false);
+        ctx.lineTo(-tailLen, 0);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(' + p.color + ', ' + (0.55 * life) + ')';
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function tick() {
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        particles = particles.filter(function (p) { return p.life > 0; });
+        particles.forEach(function (p) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx *= 0.9;
+          p.vy *= 0.9;
+          p.life -= 0.01;
+          drawParticle(p);
+        });
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    })();
   </script>
 </body>
 
