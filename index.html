@@ -1693,8 +1693,8 @@
     (function () {
       var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
-      if (prefersReducedMotion || isTouchDevice) return;
-
+      // if (prefersReducedMotion || isTouchDevice) return;
+      if (prefersReducedMotion) return;
       var canvas = document.getElementById('sparkle-canvas');
       var ctx = canvas.getContext('2d');
       var colors = ['29,78,216', '17,17,17', '220,38,38'];
@@ -1736,6 +1736,43 @@
         if (particles.length > 220) particles.splice(0, particles.length - 220);
       });
 
+      var lastScrollY = window.scrollY;
+
+      window.addEventListener('scroll', function () {
+        var currentScrollY = window.scrollY;
+        var dy = currentScrollY - lastScrollY;
+
+        if (Math.abs(dy) < 1) return;
+
+        lastScrollY = currentScrollY;
+
+        // Cursor ki last known position
+        var point = lastPoint || {
+          x: window.innerWidth / 2,
+          y: window.innerHeight / 2
+        };
+          var particleCount = Math.min(12, Math.max(4, Math.floor(Math.abs(dy) / 3)));
+
+          for (var i = 0; i < particleCount; i++) {
+            particles.push({
+            x: point.x + (Math.random() - 0.5) * 75,
+            y: point.y + (Math.random() - 0.5) * 75,
+            
+            vx: (Math.random() - 0.5) * 0.25,
+            vy: dy * 0.18 + (Math.random() - 0.5) * 0.25,
+
+            size: 0.8 + Math.random() * 1.1,
+            life: 1,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          });
+        }
+
+        if (particles.length > 220) {
+          particles.splice(0, particles.length - 220);
+        }
+      });
+
+
       function drawParticle(p) {
         var life = Math.max(p.life, 0);
         if (life <= 0) return;
@@ -1767,7 +1804,7 @@
           p.y += p.vy;
           p.vx *= 0.9;
           p.vy *= 0.9;
-          p.life -= 0.01;
+          p.life -= 0.007;
           drawParticle(p);
         });
         requestAnimationFrame(tick);
