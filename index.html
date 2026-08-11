@@ -983,6 +983,7 @@
       height: 16px;
       flex-shrink: 0;
     }
+
     /* ── CURSOR SPARKLES ── */
     #sparkle-canvas {
       position: fixed;
@@ -1284,9 +1285,9 @@
             server incidents immediately.
           </p>
           <div class="project-tags"><span class="project-tag">Flutter</span><span class="project-tag">Dart</span><span
-              class="project-tag">Kotlin</span><span class="project-tag">Swift</span><span class="project-tag">BLoC</span><span
-              class="project-tag">Python</span><span class="project-tag">FastAPI</span><span
-              class="project-tag">WebSocket</span><span
+              class="project-tag">Kotlin</span><span class="project-tag">Swift</span><span
+              class="project-tag">BLoC</span><span class="project-tag">Python</span><span
+              class="project-tag">FastAPI</span><span class="project-tag">WebSocket</span><span
               class="project-tag">CI/CD</span></div>
           <a href="https://play.google.com/store/apps/details?id=com.chatbot.autonet&pcampaignid=web_share"
             target="_blank" rel="noopener noreferrer" class="playstore-link">
@@ -1338,8 +1339,11 @@
             collection, violation logging, and real-time sync for US municipalities.<br>Implementing custom notification
             delivery via Sockets and Flutter background services without Firebase.
           </p>
-          <div class="project-tags"><span class="project-tag">Flutter</span><span
-              class="project-tag">Flutter Background Services</span><span class="project-tag">REST API</span><span class="project-tag">Canvas</span><span class="project-tag">Firebase Analytics</span><span class="project-tag">Firebase Crashlytics</span><span class="project-tag">SOLID Principles</span><span class="project-tag">Android</span><span class="project-tag">iOS</span></div>
+          <div class="project-tags"><span class="project-tag">Flutter</span><span class="project-tag">Flutter Background
+              Services</span><span class="project-tag">REST API</span><span class="project-tag">Canvas</span><span
+              class="project-tag">Firebase Analytics</span><span class="project-tag">Firebase Crashlytics</span><span
+              class="project-tag">SOLID Principles</span><span class="project-tag">Android</span><span
+              class="project-tag">iOS</span></div>
           <a href="https://apps.apple.com/us/app/ticketpro-parking/id1615407640" target="_blank"
             rel="noopener noreferrer" class="store-link">
             <svg viewBox="0 0 384 512" fill="currentColor">
@@ -1362,9 +1366,10 @@
             <br>Built a Flutter-based civic engagement app with auth systems, background jobs, and Google Maps
             integration for location-based features — handling coordinates.
           </p>
-          <div class="project-tags"><span class="project-tag">Flutter</span><span class="project-tag">Python</span><span class="project-tag">Django</span><span
-              class="project-tag">Firebase</span><span class="project-tag">WebScraping</span><span
-              class="project-tag">Google Maps</span><span class="project-tag">Background Jobs</span></div>
+          <div class="project-tags"><span class="project-tag">Flutter</span><span class="project-tag">Python</span><span
+              class="project-tag">Django</span><span class="project-tag">Firebase</span><span
+              class="project-tag">WebScraping</span><span class="project-tag">Google Maps</span><span
+              class="project-tag">Background Jobs</span></div>
 
           <div class="store-links">
             <a href="https://play.google.com/store/apps/details?id=com.snl.cogta&hl=en" target="_blank"
@@ -1421,12 +1426,14 @@
           <div class="project-period">Feb 2022 – Sep 2022</div>
           <p class="project-desc">Rajshree Retailer app simplifies lottery management for retailers with real-time data,
             barcode scanning, and efficient sales.
-            <br> Developed a android app for lottery retailers to manage sales, check results, and receive notifications. Implemented REST APIs for real-time data sync and push notifications for lottery results.
+            <br> Developed a android app for lottery retailers to manage sales, check results, and receive
+            notifications. Implemented REST APIs for real-time data sync and push notifications for lottery results.
           </p>
-          <div class="project-tags"><span class="project-tag">Android</span><span
-              class="project-tag">Kotlin</span><span class="project-tag">Retrofit</span><span class="project-tag">MVC</span><span class="project-tag">Push Notificationqs</span><span class="project-tag">REST APIs</span><span class="project-tag">JSON</span></div>
-          <a href="https://rajshree-retailer-pl-app.en.softonic.com/android?ex=S4U-976.1&rex=true"
-            target="_blank" rel="noopener noreferrer" class="playstore-link">
+          <div class="project-tags"><span class="project-tag">Android</span><span class="project-tag">Kotlin</span><span
+              class="project-tag">Retrofit</span><span class="project-tag">MVC</span><span class="project-tag">Push
+              Notificationqs</span><span class="project-tag">REST APIs</span><span class="project-tag">JSON</span></div>
+          <a href="https://rajshree-retailer-pl-app.en.softonic.com/android?ex=S4U-976.1&rex=true" target="_blank"
+            rel="noopener noreferrer" class="playstore-link">
             <svg viewBox="0 0 512 512" fill="currentColor">
               <path
                 d="M325.3 234.3L104.6 13.5C97.9 8.2 89.7 5.2 81 5.2c-19.5 0-35.4 15.9-35.4 35.4v430.8c0 19.5 15.9 35.4 35.4 35.4 8.7 0 16.9-3 23.6-8.3l220.7-220.8c9.3-9.3 14.5-21.9 14.5-35 0-13.1-5.2-25.7-14.5-35z"
@@ -1733,7 +1740,12 @@
             color: colors[Math.floor(Math.random() * colors.length)]
           });
         }
-        if (particles.length > 220) particles.splice(0, particles.length - 220);
+        var isMobile = window.matchMedia('(pointer: coarse)').matches;
+
+        var MAX_PARTICLES = isMobile ? 70 : 220;
+        if (particles.length > MAX_PARTICLES) {
+          particles.splice(0, particles.length - MAX_PARTICLES);
+        }
       });
 
       var lastScrollY = window.scrollY;
@@ -1751,13 +1763,17 @@
           x: window.innerWidth / 2,
           y: window.innerHeight / 2
         };
-          var particleCount = Math.min(12, Math.max(4, Math.floor(Math.abs(dy) / 3)));
+        var isMobile = window.matchMedia('(pointer: coarse)').matches;
 
-          for (var i = 0; i < particleCount; i++) {
-            particles.push({
+        var particleCount = isMobile
+          ? Math.min(4, Math.max(1, Math.floor(Math.abs(dy) / 5)))
+          : Math.min(12, Math.max(4, Math.floor(Math.abs(dy) / 3)));
+
+        for (var i = 0; i < particleCount; i++) {
+          particles.push({
             x: point.x + (Math.random() - 0.5) * 75,
             y: point.y + (Math.random() - 0.5) * 75,
-            
+
             vx: (Math.random() - 0.5) * 0.25,
             vy: dy * 0.18 + (Math.random() - 0.5) * 0.25,
 
@@ -1767,7 +1783,8 @@
           });
         }
 
-        if (particles.length > 220) {
+        var MAX_PARTICLES = isMobile ? 70 : 220;
+        if (particles.length > MAX_PARTICLES) {
           particles.splice(0, particles.length - 220);
         }
       });
@@ -1797,6 +1814,8 @@
       }
 
       function tick() {
+        var isMobile = window.matchMedia('(pointer: coarse)').matches;
+
         ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
         particles = particles.filter(function (p) { return p.life > 0; });
         particles.forEach(function (p) {
@@ -1804,7 +1823,7 @@
           p.y += p.vy;
           p.vx *= 0.9;
           p.vy *= 0.9;
-          p.life -= 0.007;
+          p.life -= isMobile ? 0.008 : 0.005;
           drawParticle(p);
         });
         requestAnimationFrame(tick);
