@@ -1668,913 +1668,1156 @@
     <div class="footer-copy">© 2026 Vipin Kumar · Senior Software Engineer · New Delhi, India</div>
   </footer>
 
-  <script>
+<script>
+  // =========================================================
+  // SMOOTH ACTIVE NAV
+  // =========================================================
+
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) {
+        current = s.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(a => {
+      a.style.color =
+        a.getAttribute('href') === '#' + current
+          ? 'var(--blue)'
+          : '';
+    });
+  });
+
+
+  // =========================================================
+  // CONTACT FORM
+  // =========================================================
+
+  document.getElementById('contactForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById('fname').value;
+    const email = document.getElementById('femail').value;
+    const subject = document.getElementById('fsubject').value;
+    const message = document.getElementById('fmessage').value;
+    const msg = document.getElementById('formMsg');
+
+    const mailtoLink =
+      `mailto:vipindhiman854@gmail.com?subject=${encodeURIComponent(
+        subject + ' - from ' + name
+      )}&body=${encodeURIComponent(
+        'Name: ' + name +
+        '\nEmail: ' + email +
+        '\n\n' + message
+      )}`;
+
+    window.location.href = mailtoLink;
+
+    msg.textContent =
+      '✓ Opening your email client... Thanks for reaching out, ' + name + '!';
+
+    msg.className = 'form-msg success';
+
+    this.reset();
+  });
+
+
+  // =========================================================
+  // SPARKLE TRAIL
+  // =========================================================
+
+  (function () {
+
+    var prefersReducedMotion =
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) return;
+
+
+    var isTouchDevice =
+      window.matchMedia('(pointer: coarse)').matches;
+
+
+    var canvas =
+      document.getElementById('sparkle-canvas');
+
+    var ctx =
+      canvas.getContext('2d');
+
+
+    var colors = [
+      '29,78,216',
+      '17,17,17',
+      '220,38,38'
+    ];
+
+
+    var particles = [];
+
+    var lastPoint = null;
+
+    var lastScrollY = window.scrollY;
+
+    var animationRunning = false;
+
+
     // =========================================================
-    // SPARKLE TRAIL
+    // MOBILE FINGER STATE
     // =========================================================
 
-    (function () {
+    var isFingerDown = false;
 
-      var prefersReducedMotion =
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      if (prefersReducedMotion) return;
+    var holdInterval = null;
 
 
-      var isTouchDevice =
-        window.matchMedia('(pointer: coarse)').matches;
+    // =========================================================
+    // MOBILE CURRENT TARGET
+    //
+    // Ye sabse important part hai.
+    //
+    // Sparkles ka target finger ke saath move karega,
+    // lekin particles khud instantly move nahi honge.
+    //
+    // Isse natural "lagging / antigravity" effect milega.
+    // =========================================================
+
+    var mobileTarget = {
+      x: 0,
+      y: 0
+    };
 
 
-      var canvas =
-        document.getElementById('sparkle-canvas');
+    // =========================================================
+    // PERFORMANCE
+    // =========================================================
 
-      var ctx =
-        canvas.getContext('2d');
-
-
-      var colors = [
-        '29,78,216',
-        '17,17,17',
-        '220,38,38'
-      ];
+    // Mobile mein thode zyada particles,
+    // but still controlled.
+    //
+    // Laptop unchanged.
+    var MAX_PARTICLES =
+      isTouchDevice ? 75 : 150;
 
 
-      var particles = [];
-
-      var lastPoint = null;
-
-      var lastScrollY = window.scrollY;
-
-      var animationRunning = false;
-
-
-      // =========================================================
-      // MOBILE FINGER HOLD
-      // =========================================================
-
-      var isFingerDown = false;
-
-      var holdInterval = null;
-
-
-      // =========================================================
-      // PERFORMANCE
-      // =========================================================
-
-      // Mobile mein thode zyada particles,
-      // lekin controlled rakhe hain.
-      //
-      // Laptop value bilkul same.
-      var MAX_PARTICLES =
-        isTouchDevice ? 75 : 150;
-
-
-      // Mobile GPU load control
-      var pixelRatio =
-        isTouchDevice
-          ? Math.min(
+    // Mobile GPU load control
+    var pixelRatio =
+      isTouchDevice
+        ? Math.min(
             window.devicePixelRatio || 1,
             1.5
           )
-          : Math.min(
+        : Math.min(
             window.devicePixelRatio || 1,
             2
           );
 
 
-      // =========================================================
-      // RESIZE
-      // =========================================================
+    // =========================================================
+    // RESIZE
+    // =========================================================
 
-      function resize() {
+    function resize() {
 
-        pixelRatio =
-          isTouchDevice
-            ? Math.min(
+      pixelRatio =
+        isTouchDevice
+          ? Math.min(
               window.devicePixelRatio || 1,
               1.5
             )
-            : Math.min(
+          : Math.min(
               window.devicePixelRatio || 1,
               2
             );
 
 
-        canvas.width =
-          window.innerWidth * pixelRatio;
+      canvas.width =
+        window.innerWidth * pixelRatio;
 
-        canvas.height =
-          window.innerHeight * pixelRatio;
-
-
-        canvas.style.width =
-          window.innerWidth + 'px';
-
-        canvas.style.height =
-          window.innerHeight + 'px';
+      canvas.height =
+        window.innerHeight * pixelRatio;
 
 
-        ctx.setTransform(
-          pixelRatio,
-          0,
-          0,
-          pixelRatio,
-          0,
-          0
-        );
-      }
+      canvas.style.width =
+        window.innerWidth + 'px';
+
+      canvas.style.height =
+        window.innerHeight + 'px';
 
 
-      resize();
-
-      window.addEventListener(
-        'resize',
-        resize
+      ctx.setTransform(
+        pixelRatio,
+        0,
+        0,
+        pixelRatio,
+        0,
+        0
       );
+    }
 
 
-      // =========================================================
-      // ADD NORMAL PARTICLE
-      // =========================================================
+    resize();
 
-      function addParticle(
-        x,
-        y,
-        vx,
-        vy,
-        size,
-        life,
-        friction
-      ) {
+    window.addEventListener(
+      'resize',
+      resize
+    );
 
-        particles.push({
 
-          x: x,
-          y: y,
+    // =========================================================
+    // ADD NORMAL PARTICLE
+    // =========================================================
 
-          vx: vx,
-          vy: vy,
+    function addParticle(
+      x,
+      y,
+      vx,
+      vy,
+      size,
+      life,
+      friction
+    ) {
 
-          size: size,
+      particles.push({
 
-          life: life,
+        x: x,
+        y: y,
 
-          friction: friction,
+        vx: vx,
+        vy: vy,
 
-          color:
-            colors[
+        size: size,
+
+        life: life,
+
+        friction: friction,
+
+        color:
+          colors[
             Math.floor(
               Math.random() * colors.length
             )
-            ]
-        });
+          ],
+
+        // Normal particle
+        radial: false,
+
+        targetX: null,
+        targetY: null
+      });
 
 
-        if (particles.length > MAX_PARTICLES) {
+      if (particles.length > MAX_PARTICLES) {
 
-          particles.splice(
-            0,
-            particles.length - MAX_PARTICLES
-          );
-        }
-
-
-        startAnimation();
+        particles.splice(
+          0,
+          particles.length - MAX_PARTICLES
+        );
       }
 
 
-      // =========================================================
-      // MOBILE RADIAL PARTICLE
-      //
-      // Particle bahar se start hoga
-      // aur center/click point ki taraf move karega.
-      // =========================================================
-
-      function addRadialParticle(
-        centerX,
-        centerY
-      ) {
-
-        // Random angle
-        var angle =
-          Math.random() *
-          Math.PI *
-          2;
+      startAnimation();
+    }
 
 
-        // Particle center se kitni door se start hoga
-        //
-        // 80 - 140px
-        //
-        // Isse "door se aa raha hai" wala effect milega.
-        var distance =
-          80 +
-          Math.random() * 60;
+    // =========================================================
+    // MOBILE RADIAL PARTICLE
+    //
+    // Sparkle door se spawn hota hai
+    // aur finger ke current target ki taraf aata hai.
+    // =========================================================
+
+    function addRadialParticle(
+      centerX,
+      centerY
+    ) {
+
+      // Random direction
+      var angle =
+        Math.random() *
+        Math.PI *
+        2;
 
 
-        var startX =
-          centerX +
-          Math.cos(angle) *
-          distance;
+      // Distance from finger
+      var distance =
+        75 +
+        Math.random() * 75;
 
 
-        var startY =
-          centerY +
-          Math.sin(angle) *
-          distance;
+      var startX =
+        centerX +
+        Math.cos(angle) *
+        distance;
 
 
-        // Center ki direction
-        var dx =
-          centerX - startX;
+      var startY =
+        centerY +
+        Math.sin(angle) *
+        distance;
 
 
-        var dy =
-          centerY - startY;
+      // Direction towards finger
+      var dx =
+        centerX - startX;
+
+      var dy =
+        centerY - startY;
 
 
-        var length =
-          Math.hypot(dx, dy);
+      var length =
+        Math.hypot(
+          dx,
+          dy
+        );
 
 
-        dx /= length;
-        dy /= length;
+      dx /= length;
+      dy /= length;
 
 
-        // Particle ki speed
-        var speed =
-          1.2 +
-          Math.random() * 1.0;
+      var speed =
+        1.0 +
+        Math.random() * 0.8;
 
 
-        addParticle(
+      particles.push({
 
-          startX,
+        x: startX,
+        y: startY,
 
-          startY,
+        vx: dx * speed,
+        vy: dy * speed,
 
-          dx * speed,
-
-          dy * speed,
-
-          // Hold sparkles slightly bigger
+        size:
           1.4 +
           Math.random() * 1.0,
 
-          // Longer life
-          1.15,
+        life: 1.15,
 
-          // Smooth movement
-          0.985
+        friction: 0.985,
+
+        color:
+          colors[
+            Math.floor(
+              Math.random() * colors.length
+            )
+          ],
+
+        // IMPORTANT
+        radial: true,
+
+        // Target follows finger
+        targetX: centerX,
+        targetY: centerY
+      });
+
+
+      if (particles.length > MAX_PARTICLES) {
+
+        particles.splice(
+          0,
+          particles.length - MAX_PARTICLES
         );
       }
 
 
-      // =========================================================
-      // DESKTOP MOUSE
-      //
-      // LAPTOP CODE SAME
-      // =========================================================
-
-      if (!isTouchDevice) {
-
-        window.addEventListener(
-          'pointermove',
-          function (e) {
-
-            var point = {
-              x: e.clientX,
-              y: e.clientY
-            };
+      startAnimation();
+    }
 
 
-            var prev =
-              lastPoint || point;
+    // =========================================================
+    // DESKTOP MOUSE
+    //
+    // LAPTOP CODE SAME
+    // =========================================================
+
+    if (!isTouchDevice) {
+
+      window.addEventListener(
+        'pointermove',
+        function (e) {
+
+          var point = {
+            x: e.clientX,
+            y: e.clientY
+          };
 
 
-            lastPoint = point;
+          var prev =
+            lastPoint || point;
 
 
-            var dx =
-              point.x - prev.x;
-
-            var dy =
-              point.y - prev.y;
+          lastPoint = point;
 
 
-            var distance =
-              Math.hypot(dx, dy);
+          var dx =
+            point.x - prev.x;
+
+          var dy =
+            point.y - prev.y;
 
 
-            var steps =
-              Math.max(
-                1,
-                Math.min(
-                  12,
-                  Math.floor(distance / 4)
+          var distance =
+            Math.hypot(
+              dx,
+              dy
+            );
+
+
+          var steps =
+            Math.max(
+              1,
+              Math.min(
+                12,
+                Math.floor(
+                  distance / 4
                 )
-              );
+              )
+            );
 
 
-            for (
-              var i = 0;
-              i < steps;
-              i++
-            ) {
+          for (
+            var i = 0;
+            i < steps;
+            i++
+          ) {
 
-              var t =
-                i / steps;
+            var t =
+              i / steps;
 
 
-              addParticle(
+            addParticle(
 
-                prev.x +
+              prev.x +
                 dx * t +
                 (Math.random() - 0.5) * 75,
 
-                prev.y +
+              prev.y +
                 dy * t +
                 (Math.random() - 0.5) * 75,
 
-                dx * 0.18 +
+              dx * 0.18 +
                 (Math.random() - 0.5) * 0.4,
 
-                dy * 0.18 +
+              dy * 0.18 +
                 (Math.random() - 0.5) * 0.4,
 
-                0.8 +
+              0.8 +
                 Math.random() * 1.1,
 
-                1,
+              1,
 
-                0.90
-              );
-            }
-
-          },
-          {
-            passive: true
+              0.90
+            );
           }
-        );
-      }
+
+        },
+        {
+          passive: true
+        }
+      );
+    }
 
 
-      // =========================================================
-      // MOBILE TOUCH
-      // =========================================================
+    // =========================================================
+    // MOBILE
+    // =========================================================
 
-      if (isTouchDevice) {
-
-        // =======================================================
-        // FINGER SCROLL / MOVE
-        //
-        // MORE PARTICLES THAN PREVIOUS VERSION
-        // =======================================================
-
-        window.addEventListener(
-          'touchmove',
-          function (e) {
-
-            if (
-              !e.touches ||
-              !e.touches.length
-            ) {
-              return;
-            }
+    if (isTouchDevice) {
 
 
-            var touch =
-              e.touches[0];
+      // =======================================================
+      // FINGER MOVE / SCROLL
+      //
+      // MORE SPARKLES
+      // =======================================================
+
+      window.addEventListener(
+        'touchmove',
+        function (e) {
+
+          if (
+            !e.touches ||
+            !e.touches.length
+          ) {
+            return;
+          }
 
 
-            var point = {
-              x: touch.clientX,
-              y: touch.clientY
-            };
+          var touch =
+            e.touches[0];
 
 
-            var prev =
-              lastPoint || point;
+          var point = {
+            x: touch.clientX,
+            y: touch.clientY
+          };
 
 
-            lastPoint = point;
+          var prev =
+            lastPoint || point;
 
 
-            var dx =
-              point.x - prev.x;
+          // Update current target
+          mobileTarget.x =
+            point.x;
 
-            var dy =
-              point.y - prev.y;
-
-
-            var distance =
-              Math.hypot(dx, dy);
+          mobileTarget.y =
+            point.y;
 
 
-            // Previous 7
-            // Now slightly more.
-            //
-            // Still capped so mobile remains smooth.
-            var steps =
-              Math.max(
-                1,
-                Math.min(
-                  9,
-                  Math.floor(distance / 4)
+          var dx =
+            point.x - prev.x;
+
+          var dy =
+            point.y - prev.y;
+
+
+          var distance =
+            Math.hypot(
+              dx,
+              dy
+            );
+
+
+          // More particles than previous version
+          // but capped for mobile performance.
+          var steps =
+            Math.max(
+              1,
+              Math.min(
+                9,
+                Math.floor(
+                  distance / 4
                 )
-              );
+              )
+            );
 
 
-            for (
-              var i = 0;
-              i < steps;
-              i++
-            ) {
+          for (
+            var i = 0;
+            i < steps;
+            i++
+          ) {
 
-              var t =
-                i / steps;
+            var t =
+              i / steps;
 
 
-              addParticle(
+            addParticle(
 
-                prev.x +
+              prev.x +
                 dx * t +
                 (Math.random() - 0.5) * 65,
 
-                prev.y +
+              prev.y +
                 dy * t +
                 (Math.random() - 0.5) * 65,
 
-                dx * 0.12 +
+              dx * 0.12 +
                 (Math.random() - 0.5) * 0.25,
 
-                dy * 0.12 +
+              dy * 0.12 +
                 (Math.random() - 0.5) * 0.25,
 
-                // Bigger
-                1.3 +
+              1.3 +
                 Math.random() * 1.0,
 
-                1,
+              1,
 
-                0.92
-              );
-            }
-
-          },
-          {
-            passive: true
+              0.92
+            );
           }
-        );
 
 
-        // =======================================================
-        // FINGER DOWN / HOLD
-        //
-        // Finger ko press karke rakho:
-        //
-        //        ✨  ✨
-        //      ✨   ↓   ✨
-        //    ✨   👆   ✨
-        //      ✨   ✨
-        //
-        // Sparkles bahar se center ki taraf aayenge.
-        // =======================================================
+          // ===================================================
+          // IMPORTANT:
+          //
+          // Existing radial particles ka target update karo.
+          //
+          // Particle ko new position par teleport nahi kar rahe.
+          // Sirf uska destination finger ke saath move kar raha hai.
+          //
+          // Isse sparkle field naturally peeche follow karega.
+          // ===================================================
 
-        window.addEventListener(
-          'touchstart',
-          function (e) {
+          for (
+            var j = 0;
+            j < particles.length;
+            j++
+          ) {
 
-            if (
-              !e.touches ||
-              !e.touches.length
-            ) {
-              return;
+            var p =
+              particles[j];
+
+
+            if (!p.radial) {
+              continue;
             }
 
 
-            var touch =
-              e.touches[0];
+            p.targetX =
+              point.x;
 
-
-            lastPoint = {
-              x: touch.clientX,
-              y: touch.clientY
-            };
-
-
-            isFingerDown = true;
-
-
-            // Clear previous interval
-            if (holdInterval !== null) {
-
-              clearInterval(
-                holdInterval
-              );
-            }
-
-
-            // Immediately create some radial sparkles
-            // so user doesn't have to wait.
-            for (
-              var i = 0;
-              i < 5;
-              i++
-            ) {
-
-              addRadialParticle(
-                lastPoint.x,
-                lastPoint.y
-              );
-            }
-
-
-            // Continue while finger is held
-            holdInterval =
-              setInterval(
-                function () {
-
-                  if (
-                    !isFingerDown ||
-                    !lastPoint
-                  ) {
-                    return;
-                  }
-
-
-                  // 3 radial particles
-                  // every 65ms
-                  //
-                  // More visible but still
-                  // controlled for mobile.
-                  for (
-                    var i = 0;
-                    i < 3;
-                    i++
-                  ) {
-
-                    addRadialParticle(
-                      lastPoint.x,
-                      lastPoint.y
-                    );
-                  }
-
-                },
-
-                65
-              );
-
-          },
-          {
-            passive: true
+            p.targetY =
+              point.y;
           }
-        );
 
 
-        // =======================================================
-        // FINGER RELEASE
-        // =======================================================
+          lastPoint =
+            point;
 
-        function stopFingerHold() {
+        },
+        {
+          passive: true
+        }
+      );
 
-          isFingerDown = false;
+
+      // =======================================================
+      // FINGER DOWN
+      // =======================================================
+
+      window.addEventListener(
+        'touchstart',
+        function (e) {
+
+          if (
+            !e.touches ||
+            !e.touches.length
+          ) {
+            return;
+          }
 
 
+          var touch =
+            e.touches[0];
+
+
+          lastPoint = {
+            x: touch.clientX,
+            y: touch.clientY
+          };
+
+
+          mobileTarget.x =
+            touch.clientX;
+
+          mobileTarget.y =
+            touch.clientY;
+
+
+          isFingerDown =
+            true;
+
+
+          // Clear old interval
           if (holdInterval !== null) {
 
             clearInterval(
               holdInterval
             );
-
-            holdInterval = null;
           }
 
 
-          lastPoint = null;
+          // Immediately show radial sparkles
+          for (
+            var i = 0;
+            i < 6;
+            i++
+          ) {
+
+            addRadialParticle(
+              mobileTarget.x,
+              mobileTarget.y
+            );
+          }
+
+
+          // ===================================================
+          // CONTINUOUS HOLD
+          // ===================================================
+
+          holdInterval =
+            setInterval(
+              function () {
+
+                if (
+                  !isFingerDown
+                ) {
+                  return;
+                }
+
+
+                // Create radial particles
+                // around CURRENT target.
+                for (
+                  var i = 0;
+                  i < 3;
+                  i++
+                ) {
+
+                  addRadialParticle(
+                    mobileTarget.x,
+                    mobileTarget.y
+                  );
+                }
+
+              },
+
+              65
+            );
+
+        },
+        {
+          passive: true
+        }
+      );
+
+
+      // =======================================================
+      // FINGER RELEASE
+      // =======================================================
+
+      function stopFingerHold() {
+
+        isFingerDown =
+          false;
+
+
+        if (
+          holdInterval !== null
+        ) {
+
+          clearInterval(
+            holdInterval
+          );
+
+          holdInterval =
+            null;
         }
 
 
-        window.addEventListener(
-          'touchend',
-          stopFingerHold,
-          {
-            passive: true
-          }
-        );
-
-
-        window.addEventListener(
-          'touchcancel',
-          stopFingerHold,
-          {
-            passive: true
-          }
-        );
+        lastPoint =
+          null;
       }
 
 
-      // =========================================================
-      // LAPTOP / TRACKPAD 2-FINGER SCROLL
-      //
-      // EXACTLY SAME AS BEFORE
-      // =========================================================
-
-      if (!isTouchDevice) {
-
-        window.addEventListener(
-          'scroll',
-          function () {
-
-            var currentScrollY =
-              window.scrollY;
+      window.addEventListener(
+        'touchend',
+        stopFingerHold,
+        {
+          passive: true
+        }
+      );
 
 
-            var dy =
-              currentScrollY -
-              lastScrollY;
+      window.addEventListener(
+        'touchcancel',
+        stopFingerHold,
+        {
+          passive: true
+        }
+      );
+    }
 
 
-            lastScrollY =
-              currentScrollY;
+    // =========================================================
+    // LAPTOP / TRACKPAD 2-FINGER SCROLL
+    //
+    // EXACTLY SAME
+    // =========================================================
+
+    if (!isTouchDevice) {
+
+      window.addEventListener(
+        'scroll',
+        function () {
+
+          var currentScrollY =
+            window.scrollY;
 
 
-            if (Math.abs(dy) < 1) {
-              return;
-            }
+          var dy =
+            currentScrollY -
+            lastScrollY;
 
 
-            var point =
-              lastPoint || {
-                x: window.innerWidth / 2,
-                y: window.innerHeight / 2
-              };
+          lastScrollY =
+            currentScrollY;
 
 
-            // Opposite direction
-            var direction =
-              dy > 0 ? -1 : 1;
+          if (
+            Math.abs(dy) < 1
+          ) {
+            return;
+          }
 
 
-            // Laptop SAME
-            var particleCount = 3;
+          var point =
+            lastPoint || {
+              x:
+                window.innerWidth / 2,
+
+              y:
+                window.innerHeight / 2
+            };
 
 
-            for (
-              var i = 0;
-              i < particleCount;
-              i++
-            ) {
+          // Opposite direction
+          var direction =
+            dy > 0
+              ? -1
+              : 1;
 
-              addParticle(
 
-                point.x +
+          // Laptop SAME
+          var particleCount =
+            3;
+
+
+          for (
+            var i = 0;
+            i < particleCount;
+            i++
+          ) {
+
+            addParticle(
+
+              point.x +
                 (Math.random() - 0.5) * 55,
 
-                point.y +
+              point.y +
                 (Math.random() - 0.5) * 55,
 
-                (Math.random() - 0.5) * 0.35,
+              (Math.random() - 0.5) * 0.35,
 
-                direction *
+              direction *
                 (
                   4.5 +
                   Math.random() * 1.5
                 ),
 
-                0.8 +
+              0.8 +
                 Math.random() * 1.0,
 
-                1,
+              1,
 
-                0.975
-              );
-            }
-
-          },
-          {
-            passive: true
+              0.975
+            );
           }
+
+        },
+        {
+          passive: true
+        }
+      );
+    }
+
+
+    // =========================================================
+    // DRAW PARTICLE
+    // =========================================================
+
+    function drawParticle(p) {
+
+      var life =
+        Math.max(
+          p.life,
+          0
         );
+
+
+      if (life <= 0) {
+        return;
       }
 
 
-      // =========================================================
-      // DRAW PARTICLE
-      // =========================================================
-
-      function drawParticle(p) {
-
-        var life =
-          Math.max(
-            p.life,
-            0
-          );
+      var speed =
+        Math.hypot(
+          p.vx,
+          p.vy
+        );
 
 
-        if (life <= 0) {
-          return;
-        }
-
-
-        var speed =
-          Math.hypot(
-            p.vx,
-            p.vy
-          );
-
-
-        var angle =
-          speed > 0.01
-            ? Math.atan2(
+      var angle =
+        speed > 0.01
+          ? Math.atan2(
               p.vy,
               p.vx
             )
-            : 0;
+          : 0;
 
 
-        var r =
-          p.size *
-          0.35 *
-          life;
+      var r =
+        p.size *
+        0.35 *
+        life;
 
 
-        var tailLen =
-          p.size *
-          4 *
-          life;
+      var tailLen =
+        p.size *
+        4 *
+        life;
 
 
-        var headOffset =
-          r * 0.4;
+      var headOffset =
+        r * 0.4;
 
 
-        ctx.save();
+      ctx.save();
 
 
-        ctx.translate(
-          p.x,
-          p.y
-        );
+      ctx.translate(
+        p.x,
+        p.y
+      );
 
 
-        ctx.rotate(
-          angle
-        );
+      ctx.rotate(
+        angle
+      );
 
 
-        ctx.beginPath();
+      ctx.beginPath();
 
 
-        ctx.moveTo(
-          -tailLen,
-          0
-        );
+      ctx.moveTo(
+        -tailLen,
+        0
+      );
 
 
-        ctx.lineTo(
-          headOffset,
-          -r
-        );
+      ctx.lineTo(
+        headOffset,
+        -r
+      );
 
 
-        ctx.arc(
-          headOffset,
-          0,
-          r,
-          -Math.PI / 2,
-          Math.PI / 2,
-          false
-        );
+      ctx.arc(
+        headOffset,
+        0,
+        r,
+        -Math.PI / 2,
+        Math.PI / 2,
+        false
+      );
 
 
-        ctx.lineTo(
-          -tailLen,
-          0
-        );
+      ctx.lineTo(
+        -tailLen,
+        0
+      );
 
 
-        ctx.closePath();
+      ctx.closePath();
 
 
-        // Mobile slightly brighter
-        var opacity =
-          isTouchDevice
-            ? 0.65 * life
-            : 0.55 * life;
+      var opacity =
+        isTouchDevice
+          ? 0.65 * life
+          : 0.55 * life;
 
 
-        ctx.fillStyle =
-          'rgba(' +
-          p.color +
-          ', ' +
-          opacity +
-          ')';
+      ctx.fillStyle =
+        'rgba(' +
+        p.color +
+        ', ' +
+        opacity +
+        ')';
 
 
-        ctx.fill();
+      ctx.fill();
 
 
-        ctx.restore();
+      ctx.restore();
+    }
+
+
+    // =========================================================
+    // ANIMATION
+    // =========================================================
+
+    function startAnimation() {
+
+      if (animationRunning) {
+        return;
       }
 
 
-      // =========================================================
-      // ANIMATION
-      // =========================================================
+      animationRunning =
+        true;
 
-      function startAnimation() {
 
-        if (animationRunning) {
-          return;
+      requestAnimationFrame(
+        tick
+      );
+    }
+
+
+    function tick() {
+
+      ctx.clearRect(
+        0,
+        0,
+        window.innerWidth,
+        window.innerHeight
+      );
+
+
+      var aliveParticles = [];
+
+
+      for (
+        var i = 0;
+        i < particles.length;
+        i++
+      ) {
+
+        var p =
+          particles[i];
+
+
+        if (
+          p.life <= 0
+        ) {
+          continue;
         }
 
 
-        animationRunning = true;
+        // =====================================================
+        // MOBILE RADIAL PARTICLES
+        //
+        // Target finger ke saath move karta hai.
+        // Particle actual position instantly change nahi karta.
+        //
+        // Ye hi "peeche rehkar finger ko follow karna"
+        // wala effect create karta hai.
+        // =====================================================
 
-        requestAnimationFrame(
-          tick
-        );
-      }
-
-
-      function tick() {
-
-        ctx.clearRect(
-          0,
-          0,
-          window.innerWidth,
-          window.innerHeight
-        );
-
-
-        var aliveParticles = [];
-
-
-        for (
-          var i = 0;
-          i < particles.length;
-          i++
+        if (
+          isTouchDevice &&
+          p.radial &&
+          p.targetX !== null
         ) {
 
-          var p =
-            particles[i];
+          var targetDX =
+            p.targetX - p.x;
+
+          var targetDY =
+            p.targetY - p.y;
 
 
-          if (p.life <= 0) {
-            continue;
-          }
+          // Gentle attraction
+          // Lower value = more lag / smoother
+          p.vx +=
+            targetDX * 0.018;
+
+          p.vy +=
+            targetDY * 0.018;
 
 
-          p.x += p.vx;
-          p.y += p.vy;
+          // Limit velocity
+          var radialSpeed =
+            Math.hypot(
+              p.vx,
+              p.vy
+            );
 
 
-          p.vx *= p.friction;
-          p.vy *= p.friction;
+          if (
+            radialSpeed > 2.8
+          ) {
 
+            p.vx =
+              (p.vx / radialSpeed) *
+              2.8;
 
-          // Mobile
-          if (isTouchDevice) {
-
-            p.life -= 0.012;
-
-          } else {
-
-            // Laptop SAME
-            p.life -= 0.007;
-          }
-
-
-          if (p.life > 0) {
-
-            drawParticle(p);
-
-            aliveParticles.push(p);
+            p.vy =
+              (p.vy / radialSpeed) *
+              2.8;
           }
         }
 
 
-        particles =
-          aliveParticles;
+        // =====================================================
+        // MOVE
+        // =====================================================
+
+        p.x += p.vx;
+        p.y += p.vy;
 
 
-        if (particles.length === 0) {
+        // =====================================================
+        // FRICTION
+        // =====================================================
 
-          animationRunning = false;
+        p.vx *=
+          p.friction;
 
-          return;
+        p.vy *=
+          p.friction;
+
+
+        // =====================================================
+        // LIFE
+        // =====================================================
+
+        if (isTouchDevice) {
+
+          p.life -=
+            0.012;
+
+        } else {
+
+          // Laptop unchanged
+          p.life -=
+            0.007;
         }
 
 
-        requestAnimationFrame(
-          tick
-        );
+        if (
+          p.life > 0
+        ) {
+
+          drawParticle(p);
+
+          aliveParticles.push(p);
+        }
       }
 
 
-    })();
-  </script>
+      particles =
+        aliveParticles;
+
+
+      // =====================================================
+      // STOP ANIMATION WHEN EMPTY
+      // =====================================================
+
+      if (
+        particles.length === 0
+      ) {
+
+        animationRunning =
+          false;
+
+        return;
+      }
+
+
+      requestAnimationFrame(
+        tick
+      );
+    }
+
+  })();
+</script>
 </body>
 
 </html>
