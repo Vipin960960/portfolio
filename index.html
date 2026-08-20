@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=1280" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vipin Kumar — Flutter Developer & Full Stack Engineer</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
@@ -1066,6 +1066,11 @@
       fill: var(--blue);
     }
 
+    /* ── SCROLL HINT (mobile only) ── */
+    .scroll-hint {
+      display: none;
+    }
+
     /* ── CURSOR SPARKLES ── */
     #sparkle-canvas {
       position: fixed;
@@ -1108,6 +1113,64 @@
 
       section {
         padding: 3.5rem 5%;
+      }
+
+      /* Hero should hug its content on mobile instead of
+         forcing full viewport height — that's what was pushing
+         "Who I Am" far below the fold with a blank gap. */
+      #hero {
+        min-height: auto;
+        padding-top: 5.5rem;
+        padding-bottom: 4.5rem;
+      }
+
+      .hero-inner {
+        padding: 1rem 5% 0;
+      }
+
+      .hero-stats {
+        margin-top: 2rem;
+      }
+
+      /* Bouncing "scroll down" hint, mobile only */
+      .scroll-hint {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        margin: 2.5rem auto 0;
+        width: fit-content;
+        color: var(--gray);
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        animation: scrollBounce 1.8s ease-in-out infinite;
+      }
+
+      .scroll-hint .chevron-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--bg);
+        box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        color: var(--blue);
+      }
+
+      @keyframes scrollBounce {
+
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+
+        50% {
+          transform: translateY(8px);
+        }
       }
     }
   </style>
@@ -1184,6 +1247,10 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="chevron-icon">⌄</div>
     </div>
   </section>
 
