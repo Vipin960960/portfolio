@@ -1130,13 +1130,17 @@
         padding: 0.65rem 5%;
 
         background: var(--bg);
+        opacity: 1;
+
         box-shadow: 0 5px 12px -8px var(--shadow-dark);
 
         scrollbar-width: none;
 
-        /* IMPORTANT */
         overscroll-behavior-x: contain;
         -webkit-overflow-scrolling: touch;
+
+        /* Important: background layer ko nav ke andar isolate rakhega */
+        isolation: isolate;
       }
 
       .mobile-section-nav::-webkit-scrollbar {
@@ -1144,6 +1148,9 @@
       }
 
       .mobile-section-nav a {
+        position: relative;
+        z-index: 1;
+
         flex: 0 0 auto;
 
         text-decoration: none;
@@ -1156,6 +1163,8 @@
         font-weight: 600;
 
         color: var(--gray);
+
+        /* Button ka apna background */
         background: var(--bg);
 
         box-shadow:
@@ -1168,9 +1177,23 @@
       .mobile-section-nav a.active {
         color: var(--blue);
 
+        background: var(--bg);
+
         box-shadow:
           inset 3px 3px 6px var(--shadow-dark),
           inset -3px -3px 6px var(--shadow-light);
+      }
+
+      /* Sticky nav ke peeche ka complete area cover karega */
+      .mobile-section-nav::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+
+        background: var(--bg);
+
+        z-index: 0;
+        pointer-events: none;
       }
     }
   </style>
