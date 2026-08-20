@@ -1066,11 +1066,6 @@
       fill: var(--blue);
     }
 
-    /* ── SCROLL HINT (mobile only) ── */
-    .scroll-hint {
-      display: none;
-    }
-
     /* ── CURSOR SPARKLES ── */
     #sparkle-canvas {
       position: fixed;
@@ -1078,6 +1073,10 @@
       left: 0;
       z-index: 9999;
       pointer-events: none;
+    }
+
+    .mobile-section-nav {
+      display: none;
     }
 
     /* ── MOBILE ── */
@@ -1115,62 +1114,52 @@
         padding: 3.5rem 5%;
       }
 
-      /* Hero should hug its content on mobile instead of
-         forcing full viewport height — that's what was pushing
-         "Who I Am" far below the fold with a blank gap. */
-      #hero {
-        min-height: auto;
-        padding-top: 5.5rem;
-        padding-bottom: 4.5rem;
-      }
+      .mobile-section-nav {
+        position: sticky;
+        top: 68px;
+        z-index: 90;
 
-      .hero-inner {
-        padding: 1rem 5% 0;
-      }
-
-      .hero-stats {
-        margin-top: 2rem;
-      }
-
-      /* Bouncing "scroll down" hint, mobile only */
-      .scroll-hint {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 6px;
-        margin: 2.5rem auto 0;
-        width: fit-content;
-        color: var(--gray);
-        font-size: 0.66rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        animation: scrollBounce 1.8s ease-in-out infinite;
-      }
+        gap: 0.5rem;
+        overflow-x: auto;
+        padding: 0.65rem 5%;
 
-      .scroll-hint .chevron-icon {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
         background: var(--bg);
-        box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1rem;
-        color: var(--blue);
+        box-shadow: 0 5px 12px -8px var(--shadow-dark);
+
+        scrollbar-width: none;
       }
 
-      @keyframes scrollBounce {
+      .mobile-section-nav::-webkit-scrollbar {
+        display: none;
+      }
 
-        0%,
-        100% {
-          transform: translateY(0);
-        }
+      .mobile-section-nav a {
+        flex-shrink: 0;
+        text-decoration: none;
 
-        50% {
-          transform: translateY(8px);
-        }
+        padding: 0.45rem 0.8rem;
+        border-radius: 10px;
+
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--gray);
+
+        background: var(--bg);
+
+        box-shadow:
+          3px 3px 6px var(--shadow-dark),
+          -3px -3px 6px var(--shadow-light);
+
+        transition: all 0.2s ease;
+      }
+
+      .mobile-section-nav a.active {
+        color: var(--blue);
+
+        box-shadow:
+          inset 3px 3px 6px var(--shadow-dark),
+          inset -3px -3px 6px var(--shadow-light);
       }
     }
   </style>
@@ -1191,7 +1180,13 @@
     </ul>
     <a href="#contact" class="nav-cta">Hire Me</a>
   </nav>
-
+  <div class="mobile-section-nav">
+    <a href="#about" data-section="about">Who I Am</a>
+    <a href="#experience" data-section="experience">Experience</a>
+    <a href="#projects" data-section="projects">Projects</a>
+    <a href="#skills" data-section="skills">Skills</a>
+    <a href="#certifications" data-section="certifications">Certifications</a>
+  </div>
   <!-- HERO -->
   <section id="hero">
     <div class="hero-inner">
@@ -1247,10 +1242,6 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="scroll-hint">
-      <span>Scroll</span>
-      <div class="chevron-icon">⌄</div>
     </div>
   </section>
 
@@ -1821,7 +1812,52 @@
     // =========================================================
     // SPARKLE TRAIL
     // =========================================================
+    const mobileNavLinks = document.querySelectorAll(
+      '.mobile-section-nav a'
+    );
 
+    const sections = [
+      document.getElementById('about'),
+      document.getElementById('experience'),
+      document.getElementById('projects'),
+      document.getElementById('skills'),
+      document.getElementById('certifications')
+    ];
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const currentId = entry.target.id;
+
+            mobileNavLinks.forEach((link) => {
+              link.classList.toggle(
+                'active',
+                link.dataset.section === currentId
+              );
+            });
+
+            const activeLink = document.querySelector(
+              `.mobile-section-nav a[data-section="${currentId}"]`
+            );
+
+            activeLink?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'nearest',
+              inline: 'center'
+            });
+          }
+        });
+      },
+      {
+        rootMargin: '-120px 0px -60% 0px',
+        threshold: 0
+      }
+    );
+
+    sections.forEach((section) => {
+      if (section) observer.observe(section);
+    });
     (function () {
 
       var prefersReducedMotion =
