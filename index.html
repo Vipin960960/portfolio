@@ -1116,7 +1116,7 @@
 
       .mobile-section-nav {
         position: sticky;
-        top: 68px;
+        top: 76px;
         z-index: 90;
 
         display: flex;
@@ -1882,10 +1882,31 @@
 
         const navHeight = 68 + 52;
 
+        // Page ko sirf vertically scroll karo
         window.scrollTo({
           top: target.offsetTop - navHeight,
           behavior: 'smooth'
         });
+
+        // Mobile section nav ko horizontally scroll karo
+        const nav = document.querySelector('.mobile-section-nav');
+
+        if (nav && targetId === 'skills') {
+          const certificationsLink = nav.querySelector(
+            '[data-section="certifications"]'
+          );
+
+          if (certificationsLink) {
+            nav.scrollTo({
+              left:
+                certificationsLink.offsetLeft -
+                nav.clientWidth +
+                certificationsLink.offsetWidth +
+                12,
+              behavior: 'smooth'
+            });
+          }
+        }
       });
     });
 
