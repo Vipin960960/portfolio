@@ -40,6 +40,12 @@
             padding: 0;
         }
 
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+        }
+
         html {
             scroll-behavior: smooth;
         }
@@ -152,6 +158,7 @@
             right: -80px;
             width: 500px;
             height: 500px;
+            max-width: 100vw;
             background: radial-gradient(circle, rgba(58, 95, 205, 0.10) 0%, transparent 70%);
             border-radius: 50%;
         }
@@ -164,6 +171,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 4rem;
             align-items: center;
+            width: 100%;
         }
 
         .hero-tag {
@@ -200,6 +208,7 @@
             color: var(--dark);
             letter-spacing: -1px;
             margin-bottom: 0.5rem;
+            word-wrap: break-word;
         }
 
         .hero-name span {
@@ -296,6 +305,7 @@
             border-radius: 22px;
             padding: 2rem;
             box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light);
+            word-break: break-word;
         }
 
         .hero-avatar {
@@ -334,6 +344,7 @@
             margin-bottom: 0.7rem;
             font-size: 0.83rem;
             color: var(--mid);
+            word-break: break-word;
         }
 
         .info-icon {
@@ -377,11 +388,14 @@
         /* ── SECTIONS ── */
         section {
             padding: 5rem 6%;
+            width: 100%;
+            overflow: hidden;
         }
 
         .section-inner {
             max-width: 1100px;
             margin: 0 auto;
+            width: 100%;
         }
 
         .section-label {
@@ -864,6 +878,7 @@
             color: var(--dtext);
             font-weight: 500;
             text-decoration: none;
+            word-break: break-all;
         }
 
         .contact-item-val:hover {
@@ -974,6 +989,8 @@
             padding: 2rem 6%;
             text-align: center;
             box-shadow: inset 0 6px 16px -8px var(--dshadow-dark);
+            width: 100%;
+            overflow: hidden;
         }
 
         .footer-links {
@@ -981,6 +998,7 @@
             justify-content: center;
             gap: 2rem;
             margin-bottom: 1.25rem;
+            flex-wrap: wrap;
         }
 
         .footer-links a {
@@ -1013,7 +1031,7 @@
             border-radius: 12px;
             transition: box-shadow 0.2s ease, transform 0.2s ease;
             width: fit-content;
-            max-width: 50%;
+            max-width: 100%;
             box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
         }
 
@@ -1049,7 +1067,7 @@
             border-radius: 12px;
             transition: box-shadow 0.2s ease, transform 0.2s ease;
             width: fit-content;
-            max-width: 48%;
+            max-width: 100%;
             white-space: nowrap;
             box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
         }
@@ -1116,7 +1134,7 @@
 
             .mobile-section-nav {
                 position: sticky;
-                top: 72px;
+                top: 68px;
                 z-index: 90;
 
                 display: flex;
@@ -1129,7 +1147,7 @@
 
                 padding: 0.65rem 5%;
 
-                background: transparent;
+                background: var(--bg);
                 box-shadow: none;
 
                 scrollbar-width: none;
@@ -2047,15 +2065,10 @@
             // PERFORMANCE
             // =========================================================
 
-            // Mobile mein thode zyada particles,
-            // lekin controlled rakhe hain.
-            //
-            // Laptop value bilkul same.
             var MAX_PARTICLES =
                 isTouchDevice ? 75 : 150;
 
 
-            // Mobile GPU load control
             var pixelRatio =
                 isTouchDevice
                     ? Math.min(
@@ -2171,9 +2184,6 @@
 
             // =========================================================
             // MOBILE RADIAL PARTICLE
-            //
-            // Particle bahar se start hoga
-            // aur center/click point ki taraf move karega.
             // =========================================================
 
             function addRadialParticle(
@@ -2181,18 +2191,12 @@
                 centerY
             ) {
 
-                // Random angle
                 var angle =
                     Math.random() *
                     Math.PI *
                     2;
 
 
-                // Particle center se kitni door se start hoga
-                //
-                // 80 - 140px
-                //
-                // Isse "door se aa raha hai" wala effect milega.
                 var distance =
                     80 +
                     Math.random() * 60;
@@ -2210,7 +2214,6 @@
                     distance;
 
 
-                // Center ki direction
                 var dx =
                     centerX - startX;
 
@@ -2227,7 +2230,6 @@
                 dy /= length;
 
 
-                // Particle ki speed
                 var speed =
                     1.2 +
                     Math.random() * 1.0;
@@ -2243,14 +2245,11 @@
 
                     dy * speed,
 
-                    // Hold sparkles slightly bigger
                     1.4 +
                     Math.random() * 1.0,
 
-                    // Longer life
                     1.15,
 
-                    // Smooth movement
                     0.985
                 );
             }
@@ -2258,8 +2257,6 @@
 
             // =========================================================
             // DESKTOP MOUSE
-            //
-            // LAPTOP CODE SAME
             // =========================================================
 
             if (!isTouchDevice) {
@@ -2351,12 +2348,6 @@
 
             if (isTouchDevice) {
 
-                // =======================================================
-                // FINGER SCROLL / MOVE
-                //
-                // MORE PARTICLES THAN PREVIOUS VERSION
-                // =======================================================
-
                 window.addEventListener(
                     'touchmove',
                     function (e) {
@@ -2397,10 +2388,6 @@
                             Math.hypot(dx, dy);
 
 
-                        // Previous 7
-                        // Now slightly more.
-                        //
-                        // Still capped so mobile remains smooth.
                         var steps =
                             Math.max(
                                 1,
@@ -2437,7 +2424,6 @@
                                 dy * 0.12 +
                                 (Math.random() - 0.5) * 0.25,
 
-                                // Bigger
                                 1.3 +
                                 Math.random() * 1.0,
 
@@ -2453,19 +2439,6 @@
                     }
                 );
 
-
-                // =======================================================
-                // FINGER DOWN / HOLD
-                //
-                // Finger ko press karke rakho:
-                //
-                //        ✨  ✨
-                //      ✨   ↓   ✨
-                //    ✨   👆   ✨
-                //      ✨   ✨
-                //
-                // Sparkles bahar se center ki taraf aayenge.
-                // =======================================================
 
                 window.addEventListener(
                     'touchstart',
@@ -2492,7 +2465,6 @@
                         isFingerDown = true;
 
 
-                        // Clear previous interval
                         if (holdInterval !== null) {
 
                             clearInterval(
@@ -2501,8 +2473,6 @@
                         }
 
 
-                        // Immediately create some radial sparkles
-                        // so user doesn't have to wait.
                         for (
                             var i = 0;
                             i < 5;
@@ -2516,7 +2486,6 @@
                         }
 
 
-                        // Continue while finger is held
                         holdInterval =
                             setInterval(
                                 function () {
@@ -2529,11 +2498,6 @@
                                     }
 
 
-                                    // 3 radial particles
-                                    // every 65ms
-                                    //
-                                    // More visible but still
-                                    // controlled for mobile.
                                     for (
                                         var i = 0;
                                         i < 3;
@@ -2557,10 +2521,6 @@
                     }
                 );
 
-
-                // =======================================================
-                // FINGER RELEASE
-                // =======================================================
 
                 function stopFingerHold() {
 
@@ -2602,8 +2562,6 @@
 
             // =========================================================
             // LAPTOP / TRACKPAD 2-FINGER SCROLL
-            //
-            // EXACTLY SAME AS BEFORE
             // =========================================================
 
             if (!isTouchDevice) {
@@ -2637,12 +2595,10 @@
                             };
 
 
-                        // Opposite direction
                         var direction =
                             dy > 0 ? -1 : 1;
 
 
-                        // Laptop SAME
                         var particleCount = 3;
 
 
@@ -2783,7 +2739,6 @@
                 ctx.closePath();
 
 
-                // Mobile slightly brighter
                 var opacity =
                     isTouchDevice
                         ? 0.65 * life
@@ -2860,14 +2815,12 @@
                     p.vy *= p.friction;
 
 
-                    // Mobile
                     if (isTouchDevice) {
 
                         p.life -= 0.012;
 
                     } else {
 
-                        // Laptop SAME
                         p.life -= 0.007;
                     }
 
@@ -2913,38 +2866,37 @@
             const message = document.getElementById("fmessage").value.trim();
 
             const body =
-                `Hi Vipin,\n\n${message}\n\nRegards,\n${name}\n${email}`;
+                `Hi Vipin,
 
-            // Detect mobile/tablet
+${message}
+
+Regards,
+${name}
+${email}`;
+
             const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
             if (isMobile) {
 
-                // 📱 MOBILE → Default email app
                 const mailtoUrl =
                     `mailto:vipindhiman854@gmail.com` +
                     `?subject=${encodeURIComponent(subject)}` +
                     `&body=${encodeURIComponent(body)}`;
 
-                // Clear form
                 form.reset();
 
-                // Open default email app
                 window.location.href = mailtoUrl;
 
             } else {
 
-                // 💻 LAPTOP / DESKTOP → Gmail Web
                 const gmailUrl =
                     "https://mail.google.com/mail/?view=cm&fs=1" +
                     "&to=vipindhiman854@gmail.com" +
                     "&su=" + encodeURIComponent(subject) +
                     "&body=" + encodeURIComponent(body);
 
-                // Clear form
                 form.reset();
 
-                // Open Gmail in new tab
                 window.open(gmailUrl, "_blank");
             }
         });
