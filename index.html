@@ -1144,17 +1144,40 @@
             }
 
             .mobile-section-nav a {
+                position: relative;
+                z-index: 1;
+
                 flex: 0 0 auto;
 
-                background: #fff;
-                color: var(--gray);
+                text-decoration: none;
+                font-family: inherit;
+                white-space: nowrap;
 
                 padding: 0.45rem 0.8rem;
                 border-radius: 10px;
 
+                font-size: 0.75rem;
+                font-weight: 600;
+
+                color: var(--blue);
+
+                /* Same as Hire Me */
+                background: var(--bg);
+
                 box-shadow:
-                    3px 3px 6px var(--shadow-dark),
-                    -3px -3px 6px var(--shadow-light);
+                    5px 5px 10px var(--shadow-dark),
+                    -5px -5px 10px var(--shadow-light);
+
+                transition: all 0.15s ease;
+            }
+
+            /* Click / pressed effect */
+            .mobile-section-nav a:active {
+                box-shadow:
+                    inset 3px 3px 6px var(--shadow-dark),
+                    inset -3px -3px 6px var(--shadow-light);
+
+                transform: translateY(1px);
             }
 
             .mobile-section-nav a.active {
