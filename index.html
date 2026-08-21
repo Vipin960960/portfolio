@@ -2834,48 +2834,54 @@
 
 
     })();
-  // document.getElementById("contactForm").addEventListener("submit", function (e) {
-  //   e.preventDefault();
-
-  //   const name = document.getElementById("fname").value.trim();
-  //   const email = document.getElementById("femail").value.trim();
-  //   const subject = document.getElementById("fsubject").value.trim();
-  //   const message = document.getElementById("fmessage").value.trim();
-
-  //   const body =
-  //     `Hi Vipin,\n\n` +
-  //     `${message}\n\n` +
-  //     `Regards,\n${name}\n${email}`;
-
-  //   const mailto =
-  //     `mailto:vipindhiman854@gmail.com` +
-  //     `?subject=${encodeURIComponent(subject)}` +
-  //     `&body=${encodeURIComponent(body)}`;
-
-  //   window.location.href = mailto;
-  // });
 
 
-document.getElementById("contactForm").addEventListener("submit", function (e) {
-  e.preventDefault();
+    document.getElementById("contactForm").addEventListener("submit", function (e) {
+      e.preventDefault();
 
-  const name = document.getElementById("fname").value.trim();
-  const email = document.getElementById("femail").value.trim();
-  const subject = document.getElementById("fsubject").value.trim();
-  const message = document.getElementById("fmessage").value.trim();
+      const form = this;
 
-  const body =
-    `Hi Vipin,\n\n${message}\n\nRegards,\n${name}\n${email}`;
+      const name = document.getElementById("fname").value.trim();
+      const email = document.getElementById("femail").value.trim();
+      const subject = document.getElementById("fsubject").value.trim();
+      const message = document.getElementById("fmessage").value.trim();
 
-  const gmailUrl =
-    "https://mail.google.com/mail/?view=cm" +
-    "&fs=1" +
-    "&to=vipindhiman854@gmail.com" +
-    "&su=" + encodeURIComponent(subject) +
-    "&body=" + encodeURIComponent(body);
+      const body =
+        `Hi Vipin,\n\n${message}\n\nRegards,\n${name}\n${email}`;
 
-  window.open(gmailUrl, "_blank");
-});
+      // Detect mobile/tablet
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+      if (isMobile) {
+
+        // 📱 MOBILE → Default email app
+        const mailtoUrl =
+          `mailto:vipindhiman854@gmail.com` +
+          `?subject=${encodeURIComponent(subject)}` +
+          `&body=${encodeURIComponent(body)}`;
+
+        // Clear form
+        form.reset();
+
+        // Open default email app
+        window.location.href = mailtoUrl;
+
+      } else {
+
+        // 💻 LAPTOP / DESKTOP → Gmail Web
+        const gmailUrl =
+          "https://mail.google.com/mail/?view=cm&fs=1" +
+          "&to=vipindhiman854@gmail.com" +
+          "&su=" + encodeURIComponent(subject) +
+          "&body=" + encodeURIComponent(body);
+
+        // Clear form
+        form.reset();
+
+        // Open Gmail in new tab
+        window.open(gmailUrl, "_blank");
+      }
+    });
 
   </script>
 </body>
